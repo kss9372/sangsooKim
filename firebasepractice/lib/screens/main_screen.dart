@@ -99,9 +99,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: !isSignupScreen
-                                        ? Palette.activeColor
-                                        : Palette.textColor1),
+                                    color: isSignupScreen
+                                        ? Palette.textColor1
+                                        : Palette.activeColor),
                                 //3항조건 연산자: isSignupScreen이 true면 acitveColor, false면 textColor1을
                               ),
                               if (!isSignupScreen) //isSignupScreen 로그인이 선택된 상황에만 적용되도록
@@ -127,7 +127,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
-                                      color: !isSignupScreen
+                                      color: isSignupScreen
                                           ? Palette.activeColor
                                           : Palette.textColor1),
                                 ),
