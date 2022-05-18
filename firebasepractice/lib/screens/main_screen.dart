@@ -1,5 +1,7 @@
 import 'package:firebasepractice/config/palette.dart';
+import 'package:firebasepractice/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({Key? key}) : super(key: key);
@@ -9,16 +11,18 @@ class LoginSignupScreen extends StatefulWidget {
 }
 
 class _LoginSignupScreenState extends State<LoginSignupScreen> {
+  final _authentication = FirebaseAuth.instance;
+
   bool isSignupScreen = true;
   final _formKey = GlobalKey<FormState>();
   String userName = '';
   String userEmail = '';
   String userPassword = '';
 
-  void _tryValidation(){
+  void _tryValidation() {
     final isValid = _formKey.currentState!.validate();
-    if(isValid){
-      _formKey.currentState!.save();//onSaved메소드 작동
+    if (isValid) {
+      _formKey.currentState!.save(); //onSaved메소드 작동
     }
   }
 
@@ -27,8 +31,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     return Scaffold(
       backgroundColor: Palette.backgroundColor,
       body: GestureDetector(
-        onTap: (){
-          FocusScope.of(context).unfocus();//다른곳 누르면 키보드 없어짐
+        onTap: () {
+          FocusScope.of(context).unfocus(); //다른곳 누르면 키보드 없어짐
         },
         child: Stack(
           children: [
@@ -68,7 +72,9 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         height: 5,
                       ),
                       Text(
-                        isSignupScreen ? 'Signup to Continue' : 'Signin continue',
+                        isSignupScreen
+                            ? 'Signup to Continue'
+                            : 'Signin continue',
                         style: TextStyle(
                           letterSpacing: 1.0,
                           color: Colors.pink,
@@ -81,7 +87,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
             ),
             //배경
             AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
+                duration: Duration(milliseconds: 300),
                 curve: Curves.easeIn,
                 top: 180,
                 child: AnimatedContainer(
@@ -89,7 +95,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   curve: Curves.easeIn,
                   padding: EdgeInsets.all(20.0),
                   height: isSignupScreen ? 280.0 : 250.0,
-                  width: MediaQuery.of(context).size.width - 40, //기기마다의 사이즈에 적용가능
+                  width:
+                      MediaQuery.of(context).size.width - 40, //기기마다의 사이즈에 적용가능
                   margin:
                       EdgeInsets.symmetric(horizontal: 20.0), //항상 좌우 20픽셀 여백 점유
                   decoration: BoxDecoration(
@@ -164,204 +171,228 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                 ))
                           ],
                         ),
-                        if(isSignupScreen)
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Form(
-                            key: _formKey,
-                              child: Column(children: [
-                            TextFormField(
-                              key: ValueKey(1),
-                              validator: (value){
-                                if(value!.isEmpty || value.length < 4){
-                                  return 'Please enter at least 4 characters';
-                                }
-                                return null;
-                              },
-                              onSaved: (value){
-                                userName = value!;
-                              },
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.account_circle,
-                                    color: Palette.iconColor,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Palette.textColor1),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35.0),
-                                      )),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Palette.textColor1),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(35.0),
-                                    ),
-                                  ),
-                                  hintText: 'User name',
-                                  hintStyle: TextStyle(
-                                      fontSize: 14, color: Palette.textColor1),
-                                  contentPadding: EdgeInsets.all(10.0)),
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            TextFormField(
-                              key: ValueKey(2),
-                              validator: (value){
-                                if(value!.isEmpty || !value.contains('@')){
-                                  return 'Plaease enter a valid email address.';
-                                }
-                                return null;
-                              },
-                              onSaved: (value){
-                                userEmail = value!;
-                              },
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.email_rounded,
-                                    color: Palette.iconColor,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Palette.textColor1),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35.0),
-                                      )),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Palette.textColor1),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(35.0),
-                                    ),
-                                  ),
-                                  hintText: 'email',
-                                  hintStyle: TextStyle(
-                                      fontSize: 14, color: Palette.textColor1),
-                                  contentPadding: EdgeInsets.all(10.0)),
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            TextFormField(
-                              key: ValueKey(3),
-                              validator: (value){
-                                if(value!.isEmpty || value.length < 6){
-                                  return 'Password must be at least 7 characters long.';
-                                }
-                              },
-                              onSaved: (value){
-                                userPassword = value!;
-                              },
-                              decoration: InputDecoration(
-                                  prefixIcon: Icon(
-                                    Icons.lock,
-                                    color: Palette.iconColor,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Palette.textColor1),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(35.0),
-                                      )),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Palette.textColor1),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(35.0),
-                                    ),
-                                  ),
-                                  hintText: 'password',
-                                  hintStyle: TextStyle(
-                                      fontSize: 14, color: Palette.textColor1),
-                                  contentPadding: EdgeInsets.all(10.0)),
-                            ),
-                          ])),
-                        ),
-                        if(!isSignupScreen)
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  key: ValueKey(4),
-                                  validator: (value){
-                                    if(value!.isEmpty || !value.contains('@')){
-                                      return 'Plaease enter a valid email address.';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value){
-                                    userEmail = value!;
-                                  },
-                                  decoration: InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.email_rounded,
-                                        color: Palette.iconColor,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: Palette.textColor1),
+                        if (isSignupScreen)
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Form(
+                                key: _formKey,
+                                child: Column(children: [
+                                  TextFormField(
+                                    key: ValueKey(1),
+                                    validator: (value) {
+                                      if (value!.isEmpty || value.length < 4) {
+                                        return 'Please enter at least 4 characters';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      userName = value!;
+                                    },
+                                    onChanged: (value) {
+                                      userName = value;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.account_circle,
+                                          color: Palette.iconColor,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Palette.textColor1),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(35.0),
+                                            )),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Palette.textColor1),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(35.0),
-                                          )),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(color: Palette.textColor1),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(35.0),
+                                          ),
                                         ),
-                                      ),
-                                      hintText: 'email',
-                                      hintStyle: TextStyle(
-                                          fontSize: 14, color: Palette.textColor1),
-                                      contentPadding: EdgeInsets.all(10.0)),
-                                ),
-                                SizedBox(
-                                  height: 8.0,
-                                ),
-                                TextFormField(
-                                 key: ValueKey(5),//
-                                  validator: (value){
-                                   if(value!.isEmpty || value.length < 6){
-                                     return 'Password must be at least 7 characters long.';
-                                   }
-                                   return null;
-                                  },
-                                  onSaved: (value){
-                                    userPassword = value!;
-                                  },
-                                  decoration: InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.lock,
-                                        color: Palette.iconColor,
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide:
-                                          BorderSide(color: Palette.textColor1),
+                                        hintText: 'User name',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.textColor1),
+                                        contentPadding: EdgeInsets.all(10.0)),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  TextFormField(
+                                    keyboardType: TextInputType.emailAddress,
+                                    key: ValueKey(2),
+                                    validator: (value) {
+                                      if (value!.isEmpty ||
+                                          !value.contains('@')) {
+                                        return 'Please enter a valid email address.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      userEmail = value!;
+                                    },
+                                    onChanged: (value) {
+                                      userEmail = value;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.email_rounded,
+                                          color: Palette.iconColor,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Palette.textColor1),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(35.0),
+                                            )),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Palette.textColor1),
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(35.0),
-                                          )),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                        BorderSide(color: Palette.textColor1),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(35.0),
+                                          ),
                                         ),
-                                      ),
-                                      hintText: 'password',
-                                      hintStyle: TextStyle(
-                                          fontSize: 14, color: Palette.textColor1),
-                                      contentPadding: EdgeInsets.all(10.0)),
-                                ),
-                              ],
-                            ),
+                                        hintText: 'email',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.textColor1),
+                                        contentPadding: EdgeInsets.all(10.0)),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  TextFormField(
+                                    obscureText: true,
+                                    key: ValueKey(3),
+                                    validator: (value) {
+                                      if (value!.isEmpty || value.length < 6) {
+                                        return 'Password must be at least 7 characters long.';
+                                      }
+                                    },
+                                    onSaved: (value) {
+                                      userPassword = value!;
+                                    },
+                                    onChanged: (value) {
+                                      userPassword = value;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color: Palette.iconColor,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Palette.textColor1),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(35.0),
+                                            )),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Palette.textColor1),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35.0),
+                                          ),
+                                        ),
+                                        hintText: 'password',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.textColor1),
+                                        contentPadding: EdgeInsets.all(10.0)),
+                                  ),
+                                ])),
                           ),
-                        )
-
+                        if (!isSignupScreen)
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  TextFormField(
+                                    key: ValueKey(4),
+                                    validator: (value) {
+                                      if (value!.isEmpty ||
+                                          !value.contains('@')) {
+                                        return 'Please enter a valid email address.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      userEmail = value!;
+                                    },
+                                    onChanged: (value) {
+                                      userEmail = value;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.email_rounded,
+                                          color: Palette.iconColor,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Palette.textColor1),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(35.0),
+                                            )),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Palette.textColor1),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35.0),
+                                          ),
+                                        ),
+                                        hintText: 'email',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.textColor1),
+                                        contentPadding: EdgeInsets.all(10.0)),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  TextFormField(
+                                    obscureText: true,
+                                    key: ValueKey(5), //
+                                    validator: (value) {
+                                      if (value!.isEmpty || value.length < 6) {
+                                        return 'Password must be at least 7 characters long.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      userPassword = value!;
+                                    },
+                                    onChanged: (value) {
+                                      userPassword = value;
+                                    },
+                                    decoration: InputDecoration(
+                                        prefixIcon: Icon(
+                                          Icons.lock,
+                                          color: Palette.iconColor,
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Palette.textColor1),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(35.0),
+                                            )),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Palette.textColor1),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(35.0),
+                                          ),
+                                        ),
+                                        hintText: 'password',
+                                        hintStyle: TextStyle(
+                                            fontSize: 14,
+                                            color: Palette.textColor1),
+                                        contentPadding: EdgeInsets.all(10.0)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                       ],
                     ),
                   ),
@@ -382,8 +413,53 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(50)),
                   child: GestureDetector(
-                    onTap: (){
-                      _tryValidation();
+                    onTap: () async {
+                      if (isSignupScreen) {
+                        _tryValidation();
+                        try {
+                          final newUser = await _authentication
+                              .createUserWithEmailAndPassword(
+                                  email: userEmail, password: userPassword);
+                          if (newUser.user != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return ChatScreen();
+                              }),
+                            );
+                          }
+                        } catch (e) {
+                          print(e);
+                          print('abababab');
+                          print(userName);
+                          print(userEmail);
+                          print(userPassword);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content:
+                                Text('Please check your Email and Password!'),
+                            backgroundColor: Colors.blue,
+                          ));
+                        }
+                      }
+                      if (!isSignupScreen) {
+                        _tryValidation();
+
+                        try{
+                        final newUser =
+                            await _authentication.signInWithEmailAndPassword(
+                                email: userEmail, password: userPassword);
+                        if (newUser.user != null) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) {
+                              return ChatScreen();
+                            }),
+                          );
+                        }
+                      }catch(e){
+                          print(e);
+                        }
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -408,9 +484,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                 ))),
             //전송버튼
             AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
+                duration: Duration(milliseconds: 300),
                 curve: Curves.easeIn,
-                top: isSignupScreen ? MediaQuery.of(context).size.height-125 : MediaQuery.of(context).size.height-165,
+                top: isSignupScreen
+                    ? MediaQuery.of(context).size.height - 125
+                    : MediaQuery.of(context).size.height - 165,
                 right: 0,
                 left: 0,
                 child: Column(
@@ -420,20 +498,18 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                       height: 10,
                     ),
                     TextButton.icon(
-                        onPressed: (){},
-                        style: TextButton.styleFrom(
+                      onPressed: () {},
+                      style: TextButton.styleFrom(
                           primary: Colors.white,
-                          minimumSize: Size(155,40),
+                          minimumSize: Size(155, 40),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)
-                          ),
-                          backgroundColor: Palette.googleColor
-                        ),
-                        icon: Icon(Icons.add),
-                        label: Text('Google'),)
+                              borderRadius: BorderRadius.circular(20)),
+                          backgroundColor: Palette.googleColor),
+                      icon: Icon(Icons.add),
+                      label: Text('Google'),
+                    )
                   ],
-                )
-            )
+                ))
             //구글 로그인버튼
           ],
         ),
