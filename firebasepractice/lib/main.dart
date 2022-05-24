@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebasepractice/screens/chat_screen.dart';
 import 'package:firebasepractice/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,7 +23,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginSignupScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),//로그인 로그아웃시에 state가바뀜
+        builder: (context, snapshot){
+          if(snapshot.hasData){
+            return ChatScreen();
+          }
+          return LoginSignupScreen();
+        },
+      )
+
     );
   }
 }
