@@ -1,10 +1,10 @@
+import 'package:firebasepractice/add_image/add_image.dart';
 import 'package:firebasepractice/config/palette.dart';
 import 'package:firebasepractice/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class LoginSignupScreen extends StatefulWidget {
   const LoginSignupScreen({Key? key}) : super(key: key);
@@ -29,6 +29,17 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
     if (isValid) {
       _formKey.currentState!.save(); //onSaved메소드 작동
     }
+  }
+
+  void showAlert(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            child: AddImage()
+          );
+        });
   }
 
   @override
@@ -67,7 +78,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     color: Colors.white),
                                 children: [
                               TextSpan(
-                                text: isSignupScreen ? ' to Budonoki!' : ' Back',
+                                text:
+                                    isSignupScreen ? ' to Budonoki!' : ' Back',
                                 style: TextStyle(
                                     letterSpacing: 1.0,
                                     fontSize: 25,
@@ -102,10 +114,10 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                     curve: Curves.easeIn,
                     padding: EdgeInsets.all(20.0),
                     height: isSignupScreen ? 280.0 : 250.0,
-                    width:
-                        MediaQuery.of(context).size.width - 40, //기기마다의 사이즈에 적용가능
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 20.0), //항상 좌우 20픽셀 여백 점유
+                    width: MediaQuery.of(context).size.width -
+                        40, //기기마다의 사이즈에 적용가능
+                    margin: EdgeInsets.symmetric(
+                        horizontal: 20.0), //항상 좌우 20픽셀 여백 점유
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
@@ -158,18 +170,37 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                   },
                                   child: Column(
                                     children: [
-                                      Text(
-                                        'SIGN UP',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: isSignupScreen
-                                                ? Palette.activeColor
-                                                : Palette.textColor1),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'SIGN UP',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: isSignupScreen
+                                                    ? Palette.activeColor
+                                                    : Palette.textColor1),
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showAlert(context);
+                                            },
+                                            child: Icon(
+                                              Icons.image,
+                                              color: isSignupScreen
+                                                  ? Colors.cyan
+                                                  : Colors.grey[300],
+                                            ),
+                                          )
+                                        ],
                                       ),
                                       if (isSignupScreen)
                                         Container(
-                                          margin: EdgeInsets.only(top: 3),
+                                          margin:
+                                              EdgeInsets.fromLTRB(0, 3, 35, 0),
                                           height: 2,
                                           width: 55,
                                           color: Colors.orange,
@@ -187,7 +218,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                     TextFormField(
                                       key: ValueKey(1),
                                       validator: (value) {
-                                        if (value!.isEmpty || value.length < 4) {
+                                        if (value!.isEmpty ||
+                                            value.length < 4) {
                                           return 'Please enter at least 4 characters';
                                         }
                                         return null;
@@ -272,7 +304,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                       obscureText: true,
                                       key: ValueKey(3),
                                       validator: (value) {
-                                        if (value!.isEmpty || value.length < 6) {
+                                        if (value!.isEmpty ||
+                                            value.length < 6) {
                                           return 'Password must be at least 7 characters long.';
                                         }
                                       },
@@ -361,7 +394,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                       obscureText: true,
                                       key: ValueKey(5), //
                                       validator: (value) {
-                                        if (value!.isEmpty || value.length < 6) {
+                                        if (value!.isEmpty ||
+                                            value.length < 6) {
                                           return 'Password must be at least 7 characters long.';
                                         }
                                         return null;
@@ -421,7 +455,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         borderRadius: BorderRadius.circular(50)),
                     child: GestureDetector(
                       onTap: () async {
-                        setState((){
+                        setState(() {
                           showSpinner = true;
                         });
                         if (isSignupScreen) {
@@ -430,10 +464,11 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                             final newUser = await _authentication
                                 .createUserWithEmailAndPassword(
                                     email: userEmail, password: userPassword);
-                            await FirebaseFirestore.instance.collection('user').doc(newUser.user!.uid).set({
-                              'userName' : userName,
-                              'email' : userEmail
-                            });
+                            await FirebaseFirestore.instance
+                                .collection('user')
+                                .doc(newUser.user!.uid)
+                                .set(
+                                    {'userName': userName, 'email': userEmail});
 
                             if (newUser.user != null) {
                               Navigator.push(
@@ -442,7 +477,7 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                                   return ChatScreen();
                                 }),
                               );
-                              setState((){
+                              setState(() {
                                 showSpinner = false;
                               });
                             }
@@ -462,24 +497,24 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                         if (!isSignupScreen) {
                           _tryValidation();
 
-                          try{
-                          final newUser =
-                              await _authentication.signInWithEmailAndPassword(
-                                  email: userEmail, password: userPassword);
-                          if (newUser.user != null) {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) {
-                            //     return ChatScreen();
-                            //   }),
-                            // );
-                            setState((){
-                              showSpinner = false;
-                            });
-                          }
-                        }catch(e){
+                          try {
+                            final newUser = await _authentication
+                                .signInWithEmailAndPassword(
+                                    email: userEmail, password: userPassword);
+                            if (newUser.user != null) {
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(builder: (context) {
+                              //     return ChatScreen();
+                              //   }),
+                              // );
+                              setState(() {
+                                showSpinner = false;
+                              });
+                            }
+                          } catch (e) {
                             print(e);
-                            setState((){
+                            setState(() {
                               showSpinner = false;
                             });
                           }
@@ -517,7 +552,8 @@ class _LoginSignupScreenState extends State<LoginSignupScreen> {
                   left: 0,
                   child: Column(
                     children: [
-                      Text(isSignupScreen ? 'or Signup with' : 'or Signin with'),
+                      Text(
+                          isSignupScreen ? 'or Signup with' : 'or Signin with'),
                       SizedBox(
                         height: 10,
                       ),
