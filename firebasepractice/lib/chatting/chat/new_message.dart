@@ -22,6 +22,7 @@ class _NewMessageState extends State<NewMessage> {
       'time' : Timestamp.now(), //클라우드 파이어 스토어 패키지에서 제공, 함께 저장됨
       'userID' : user.uid,
       'userName' : userData.data()!['userName'],
+      'userImage' : userData['picked_image']
     });
     _controller.clear();
   }

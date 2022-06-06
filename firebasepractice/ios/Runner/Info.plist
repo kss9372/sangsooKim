@@ -43,6 +43,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>we need an access</string>
+	<key>NSCameraUsageDescription</key>
+    <string>we need an access</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>we need an access</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>

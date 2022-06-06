@@ -1,13 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddImage extends StatefulWidget {
-  const AddImage({Key? key}) : super(key: key);
+  const AddImage(this.addImageFunc, {Key? key}) : super(key: key);
+
+  final Function(File pickedImage) addImageFunc;
 
   @override
   State<AddImage> createState() => _AddImageState();
 }
 
 class _AddImageState extends State<AddImage> {
+  File? pickedImage; //변수값이 할당되지않은 경우 ?입력
+
+  void _pickImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImageFile = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50, maxHeight: 150);
+    setState((){
+      if(pickedImageFile !=null){
+      pickedImage = File(pickedImageFile.path);
+      }
+    });
+    widget.addImageFunc(pickedImage!);
+  } //xfile: 임시저장
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,14 +38,17 @@ class _AddImageState extends State<AddImage> {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.blue,
+            backgroundImage: pickedImage != null ? FileImage(pickedImage!) : null,
           ),
           SizedBox(
             height: 10,
           ),
           OutlinedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              _pickImage();
+            },
             icon: Icon(Icons.image),
-            label: Text('Add icon'),
+            label: Text('Add Image'),
           ),
           SizedBox(
             height: 80,
